@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shivangi Singh | Product & Tech Portfolio</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Use a professional, clean font (Inter)
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        // NEW PINKISH-PURPLE/BLACK THEME
+                        'primary-dark': '#0A0A0A',      // Deep Black Background
+                        'secondary-dark': '#1A1A1A',    // Near-Black for cards/sections
+                        'accent-purple': '#EC4899',     // Fuchsia/Pinkish-Purple Accent (Fuchsia-500)
+                        'text-light': '#FAFAFA',        // Near White Text
+                        'text-secondary': '#A3A3A3',    // Mid-Grey Text
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+
+        // --- PROJECT DATA FOR MODAL (Dynamic Content) ---
+        const projectData = {
+            'cancer-app': {
+                title: "Skin Cancer Detection App (CNN)",
+                subtitle: "B. Tech Final Year Project, Madan Mohan Malaviya University of Technology",
+                details: [
+                    "Developed a full smartphone application capable of analyzing mole images using a Convolutional Neural Network (CNN) to predict malignancy likelihood.",
+                    "Focused on creating a user-friendly interface that empowers users with health-related information and fosters proactive health management.",
+                    "The model architecture was optimized for fast inference on mobile devices, enhancing early detection capabilities and potentially improving patient outcomes through faster diagnosis."
+                ],
+                tags: ["Python/TensorFlow", "Mobile Development", "Computer Vision", "Health-Tech"],
+                link: { text: "View Demo/Code (Google Colab)", url: "https://colab.research.google.com/drive/1HJ1GzGGdEkQ-VjSlaNMeBX3EkdJpC-OV" } 
+            },
+            'aqi-monitor': {
+                title: "Cloud-Based AQI Monitoring System",
+                subtitle: "Internship Project, NIELIT, Gorakhpur",
+                details: [
+                    "Established a highly robust, real-time cloud-based system for continuously monitoring the Air Quality Index (AQI).",
+                    "Integrated physical ESP8266 controller and sensor hardware for accurate collection and wireless transmission of environmental data.",
+                    "Utilized the IFTTT platform to enable automatic data analysis, visualization, and set up actionable alerts for critical changes in AQI levels, ensuring timely responses."
+                ],
+                tags: ["IoT", "Cloud Computing", "ESP8266", "IFTTT Integration", "Real-Time Data"],
+                // UPDATED LINK TEXT AND URL (Placeholder URL remains #)
+                link: { text: "Details (No Live Link)", url: "#" } 
+            },
+            'bus-app': {
+                title: "Bus Ticket Reservation Application",
+                subtitle: "Web Application Development Project",
+                details: [
+                    "Implemented a Spring MVC project with user login and registration functionality utilizing Spring Security for robust authentication.",
+                    "Utilized MySQL database to efficiently store and manage data for buses and users, optimizing data retrieval and management.",
+                    "Employed role-based access control for admin and user roles, facilitating seamless bus information updates.",
+                    "Designed an intuitive interface enabling users to easily filter and reserve bus seats based on timings and locations, all within a SpringBoot environment."
+                ],
+                tags: ["Core Java", "SpringBoot", "Spring MVC/Security", "MySQL"],
+                // LINK UPDATED HERE
+                link: { text: "View Code (GitHub)", url: "https://github.com/shivangis2050/busticket" } 
+            }
+        };
+
+        function openModal(projectId) {
+            const data = projectData[projectId];
+            if (!data) return;
+
+            document.getElementById('modal-title').innerText = data.title;
+            document.getElementById('modal-subtitle').innerText = data.subtitle;
+
+            const ul = document.getElementById('modal-details');
+            ul.innerHTML = ''; 
+            data.details.forEach(detail => {
+                const li = document.createElement('li');
+                li.className = 'list-disc list-inside text-text-secondary';
+                li.innerHTML = detail;
+                ul.appendChild(li);
+            });
+
+            const tagsDiv = document.getElementById('modal-tags');
+            tagsDiv.innerHTML = '';
+            data.tags.forEach(tag => {
+                const span = document.createElement('span');
+                span.className = 'bg-pink-900/50 text-pink-300 px-3 py-1 text-xs rounded-full font-medium';
+                span.innerText = tag;
+                tagsDiv.appendChild(span);
+            });
+
+            const linkButton = document.getElementById('modal-link');
+            linkButton.innerText = data.link.text;
+            linkButton.href = data.link.url;
+            
+            // Check if link is a placeholder and hide or show the link button accordingly
+            if (data.link.url === '#') {
+                linkButton.classList.add('hidden'); // Hide the button
+            } else {
+                linkButton.classList.remove('hidden'); // Show the button for real links
+            }
+
+
+            document.getElementById('project-modal').classList.remove('hidden');
+            document.body.classList.add('overflow-hidden'); // Prevent background scrolling
+        }
+
+        function closeModal() {
+            document.getElementById('project-modal').classList.add('hidden');
+            document.body.classList.remove('overflow-hidden');
+        }
+
+        // Close modal when pressing ESC key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+        
+        // --- EXPERIENCE COLLAPSE FUNCTION ---
+        function toggleExperience(id) {
+            const content = document.getElementById(id);
+            const arrowId = id.replace('-details', '-arrow');
+            const arrow = document.getElementById(arrowId);
+            
+            if (!content || !arrow) return; // Safety check
+
+            if (content.classList.contains('max-h-0')) {
+                // Expand
+                content.classList.remove('max-h-0', 'opacity-0');
+                // Use a very large arbitrary value (e.g., 900px) to ensure content never clips
+                content.classList.add('max-h-[900px]', 'opacity-100'); 
+                arrow.classList.add('rotate-180');
+            } else {
+                // Collapse
+                content.classList.remove('max-h-[900px]', 'opacity-100');
+                content.classList.add('max-h-0', 'opacity-0');
+                arrow.classList.remove('rotate-180');
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;400;700;900&display=swap');
+        
+        html { scroll-behavior: smooth; }
+        
+        /* Custom styling for the timeline dots for dark mode */
+        .timeline-dot::before {
+            content: '';
+            position: absolute;
+            left: -10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            background-color: #EC4899; /* accent-purple (Fuchsia) */
+            border-radius: 50%;
+            border: 4px solid #1A1A1A; /* secondary-dark */
+        }
+        
+        /* Scrollbar styling for dark theme */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: #EC4899;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0A0A0A;
+        }
+
+    </style>
+</head>
+<body class="bg-primary-dark text-text-light font-sans">
+
+    <!-- Navigation Bar -->
+    <header class="sticky top-0 z-50 bg-secondary-dark/95 backdrop-blur-sm shadow-lg border-b border-gray-800">
+        <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <a href="#hero" class="text-2xl font-extrabold text-accent-purple tracking-wider">SHIVANGI SINGH</a>
+            <div class="hidden md:flex space-x-8 text-base font-medium">
+                <a href="#about" class="hover:text-accent-purple transition duration-200">About</a>
+                <a href="#skills" class="hover:text-accent-purple transition duration-200">Skills</a>
+                <a href="#certifications" class="hover:text-accent-purple transition duration-200">Certifications</a>
+                <a href="#projects" class="hover:text-accent-purple transition duration-200">Projects</a>
+                <a href="#experience" class="hover:text-accent-purple transition duration-200">Experience</a>
+                <a href="#contact" class="hover:text-accent-purple transition duration-200">Contact</a>
+            </div>
+            <!-- Simple mobile menu icon placeholder -->
+            <button class="md:hidden text-text-light hover:text-accent-purple">
+                <!-- SVG Icon for menu -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            </button>
+        </nav>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+        <!-- 1. Hero Section -->
+        <section id="hero" class="min-h-[80vh] flex flex-col justify-center items-center text-center pt-16 pb-12">
+            <div class="mb-8 p-1 bg-accent-purple rounded-full shadow-lg shadow-pink-500/50">
+                 <!-- Placeholder image: replace with your professional photo -->
+                <img src="https://placehold.co/160x160/1A1A1A/FAFAFA?text=SS" alt="Shivangi Singh Profile" class="w-40 h-40 rounded-full object-cover border-4 border-primary-dark">
+            </div>
+            <h1 class="text-4xl md:text-6xl font-extrabold mb-3 leading-tight text-text-light">
+                Shivangi Singh
+            </h1>
+            <p class="text-xl md:text-3xl font-light text-text-secondary mb-8">
+                Software Engineering | Product Strategy | MBA Candidate (IIM Shillong)
+            </p>
+            <div class="flex space-x-4">
+                <a href="#projects" class="px-6 py-3 bg-accent-purple text-primary-dark rounded-lg font-semibold hover:bg-pink-600 transition duration-300 shadow-md shadow-pink-500/40">
+                    View Projects
+                </a>
+                <!-- UPDATED MAILTO LINK -->
+                <a href="mailto:shivangitanu10@gmail.com" class="px-6 py-3 border border-text-secondary text-text-light rounded-lg font-semibold hover:bg-secondary-dark transition duration-300">
+                    Email Me
+                </a>
+            </div>
+        </section>
+
+        <!-- --- -->
+
+        <!-- 2. About Section -->
+        <section id="about" class="py-16">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 text-text-light">Who I Am</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-start bg-secondary-dark p-8 rounded-xl shadow-xl border border-gray-800">
+                <div class="md:col-span-2 space-y-4 text-text-secondary text-lg leading-relaxed">
+                    <p>Hi, I’m Shivangi — a passionate technologist and aspiring product manager currently pursuing my MBA at IIM Shillong. With a background in IT and software engineering, I’ve developed scalable applications, led Agile teams, and explored how technology can transform real-world problems into meaningful solutions.</p>
+                    <p>Beyond code, I’m deeply curious about strategy, innovation, and human-centered design — how great products are imagined, built, and loved. My journey bridges engineering precision and business vision, and I’m constantly learning, experimenting, and growing at that intersection.</p>
+                    <p>When I’m not working, you’ll probably find me brainstorming new ideas over coffee, exploring the hills, or diving into a good book on creativity and leadership. Let’s connect — because every conversation is a chance to create something impactful together. 🌱</p>
+                </div>
+                <div class="md:col-span-1 p-6 bg-primary-dark rounded-lg border border-gray-700 shadow-inner">
+                    <h3 class="text-xl font-bold mb-4 text-accent-purple">Key Metrics</h3>
+                    <ul class="space-y-3 text-text-secondary">
+                        <li class="flex justify-between border-b border-gray-700 pb-2">Primary Focus: <span class="font-semibold text-text-light">Product Strategy & GenAI</span></li>
+                        <li class="flex justify-between border-b border-gray-700 pb-2">Engineering Tenure: <span class="font-semibold text-text-light">30 Months (Accenture)</span></li>
+                        <li class="flex justify-between border-b border-gray-700 pb-2">Highest Education: <span class="font-semibold text-text-light">MBA (IIM Shillong '26)</span></li>
+                        <li class="flex justify-between">Achievement: <span class="font-semibold text-text-light text-right">National Semifinalist (Tata Imagination Challenge '25)</span></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- --- -->
+        
+        <!-- 3. Skills Section (RESTRUCTURED TO 3 COLUMNS) -->
+        <section id="skills" class="py-16">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 text-text-light">Core Competencies & Tools</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                
+                <!-- Skill Set 1: Product Strategy & Management -->
+                <div class="p-5 bg-secondary-dark rounded-xl shadow-xl border-t-4 border-accent-purple">
+                    <h3 class="text-lg font-bold mb-3 text-accent-purple flex items-center">
+                        <span class="mr-2 text-2xl">💡</span> Product Strategy & Management
+                    </h3>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="bg-pink-900/50 text-pink-300 px-3 py-1 text-xs rounded-full font-medium">Product Strategy & Roadmapping</span>
+                        <span class="bg-pink-900/50 text-pink-300 px-3 py-1 text-xs rounded-full font-medium">Market Research & Analysis</span>
+                        <span class="bg-pink-900/50 text-pink-300 px-3 py-1 text-xs rounded-full font-medium">Customer Segmentation (STP)</span>
+                        <span class="bg-pink-900/50 text-pink-300 px-3 py-1 text-xs rounded-full font-medium">Go-to-Market (GTM) Strategy</span>
+                        <span class="bg-pink-900/50 text-pink-300 px-3 py-1 text-xs rounded-full font-medium">Product Lifecycle Management (PLM)</span>
+                        <span class="bg-pink-900/50 text-pink-300 px-3 py-1 text-xs rounded-full font-medium">MVP & Prioritization</span>
+                        <span class="bg-pink-900/50 text-pink-300 px-3 py-1 text-xs rounded-full font-medium">PRD & Documentation</span>
+                        <span class="bg-pink-900/50 text-pink-300 px-3 py-1 text-xs rounded-full font-medium">A/B Testing & Feedback</span>
+                        <span class="bg-pink-900/50 text-pink-300 px-3 py-1 text-xs rounded-full font-medium">UX Understanding | Growth Marketing</span>
+                    </div>
+                </div>
+
+                <!-- Skill Set 2: Core Engineering & Analytics -->
+                <div class="p-5 bg-secondary-dark rounded-xl shadow-xl border-t-4 border-gray-600">
+                    <h3 class="text-lg font-bold mb-3 text-text-light flex items-center">
+                        <span class="mr-2 text-2xl">⚙️</span> Core Engineering & Analytics
+                    </h3>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="bg-gray-700 text-gray-300 px-3 py-1 text-xs rounded-full font-medium">Java | SpringBoot | MySQL</span>
+                        <span class="bg-gray-700 text-gray-300 px-3 py-1 text-xs rounded-full font-medium">SQL | RESTful APIs | SDLC</span>
+                        <span class="bg-gray-700 text-gray-300 px-3 py-1 text-xs rounded-full font-medium">Data Analysis & Visualization</span>
+                        <span class="bg-gray-700 text-gray-300 px-3 py-1 text-xs rounded-full font-medium">MS Excel (Advanced) | Power BI | Tableau</span>
+                        <span class="bg-gray-700 text-gray-300 px-3 py-1 text-xs rounded-full font-medium">Python (Pandas, NumPy)</span>
+                        <span class="bg-gray-700 text-gray-300 px-3 py-1 text-xs rounded-full font-medium">Machine Learning & AI (Basic)</span>
+                        <span class="bg-gray-700 text-gray-300 px-3 py-1 text-xs rounded-full font-medium">APIs & Cloud Integration (Azure)</span>
+                        <span class="bg-gray-700 text-gray-300 px-3 py-1 text-xs rounded-full font-medium">Jira | Confluence | Figma</span>
+                    </div>
+                </div>
+                
+                <!-- Skill Set 3: Consulting, Leadership & Tools -->
+                 <div class="p-5 bg-secondary-dark rounded-xl shadow-xl border-t-4 border-blue-600">
+                    <h3 class="text-lg font-bold mb-3 text-blue-400 flex items-center">
+                        <span class="mr-2 text-2xl">🎯</span> Strategic Frameworks & Soft Skills
+                    </h3>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="bg-blue-900/50 text-blue-300 px-3 py-1 text-xs rounded-full font-medium">Business Problem Structuring</span>
+                        <span class="bg-blue-900/50 text-blue-300 px-3 py-1 text-xs rounded-full font-medium">Hypothesis-Driven Approach</span>
+                        <span class="bg-blue-900/50 text-blue-300 px-3 py-1 text-xs rounded-full font-medium">Cost-Benefit & ROI Analysis</span>
+                        <span class="bg-blue-900/50 text-blue-300 px-3 py-1 text-xs rounded-full font-medium">PESTEL | SWOT | Porter’s 5 Forces</span>
+                        <span class="bg-blue-900/50 text-blue-300 px-3 py-1 text-xs rounded-full font-medium">Stakeholder Management</span>
+                        <span class="bg-blue-900/50 text-blue-300 px-3 py-1 text-xs rounded-full font-medium">Cross-Functional Alignment</span>
+                        <span class="bg-blue-900/50 text-blue-300 px-3 py-1 text-xs rounded-full font-medium">Executive Communication</span>
+                        <span class="bg-blue-900/50 text-blue-300 px-3 py-1 text-xs rounded-full font-medium">Emotional Intelligence & Adaptability</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- --- -->
+
+        <!-- 4. Certifications Section (NEW SECTION) -->
+        <section id="certifications" class="py-16">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 text-text-light">Certifications & Achievements</h2>
+            <div class="max-w-4xl mx-auto p-6 bg-secondary-dark rounded-xl shadow-xl border-t-4 border-green-600">
+                <h3 class="text-xl font-bold mb-4 text-green-500 flex items-center">
+                    <span class="mr-2 text-2xl">🏅</span> Verified Professional Certificates
+                </h3>
+                <div class="flex flex-wrap gap-3">
+                    <!-- LINKED: Aha! Product Management -->
+                    <a href="https://www.linkedin.com/learning/certificates/fd8598dc45018ef4211a638a1d6fc5d95b0b132b6cc99c8733a1de0bbe9f8e4e" target="_blank" class="bg-green-700 hover:bg-green-600 text-white px-3 py-1 text-sm rounded-full font-medium transition duration-200 shadow-md">Aha! Product Management Professional Certificate</a>
+                    
+                    <!-- LINKED: Scalable Microservices (Coursera) -->
+                    <a href="https://www.coursera.org/account/accomplishments/certificate/8FTGQFBA8PVG" target="_blank" class="bg-green-700 hover:bg-green-600 text-white px-3 py-1 text-sm rounded-full font-medium transition duration-200 shadow-md">Building Scalable Java Microservices with Spring Boot and Spring Cloud (Coursera)</a>
+
+                    <!-- LINKED: Atlassian Agile -->
+                    <a href="https://www.linkedin.com/learning/certificates/00939e4459b567c5bee86acbbb79a4dffe073ae53be44b62a0fa4e821bdbb753" target="_blank" class="bg-green-700 hover:bg-green-600 text-white px-3 py-1 text-sm rounded-full font-medium transition duration-200 shadow-md">Atlassian Agile Project Management Professional Certificate</a>
+                    
+                    <!-- LINKED: Google Analytics for Beginners -->
+                    <a href="https://drive.google.com/file/d/1V12AEiu2MzzKf5F5q-A9x57Xj8aLc8rG/view?usp=sharing" target="_blank" class="bg-green-700 hover:bg-green-600 text-white px-3 py-1 text-sm rounded-full font-medium transition duration-200 shadow-md">Google Analytics for Beginners</a>
+                    
+                    <!-- LINKED: BCG Simulation -->
+                    <a href="https://forage-uploads-prod.s3.amazonaws.com/completion-certificates/BCG%20/ntTvo6ru6Tq3A2JPq_BCG_J4tFXYJTK7EWepZuJ_1720826336806_completion_certificate.pdf" target="_blank" class="bg-green-700 hover:bg-green-600 text-white px-3 py-1 text-sm rounded-full font-medium transition duration-200 shadow-md">BCG - Strategy Consulting Job Simulation</a>
+                    
+                    <!-- LINKED: AI-Driven Product Design -->
+                    <a href="https://www.linkedin.com/learning/certificates/db88254df452109823cdefc01f4626e5ba754ec317c257dc79f1e4c39e6205fa" target="_blank" class="bg-green-700 hover:bg-green-600 text-white px-3 py-1 text-sm rounded-full font-medium transition duration-200 shadow-md">AI-Driven Product Designer (LinkedIn Learning)</a>
+                    
+                    <!-- LINKED: Microsoft Azure AI Essentials -->
+                    <a href="https://www.linkedin.com/learning/certificates/f401da637a79f4d38f02e68d25f06155363f309c2f2ee3b372eb76a1dffff505" target="_blank" class="bg-green-700 hover:bg-green-600 text-white px-3 py-1 text-sm rounded-full font-medium transition duration-200 shadow-md">Microsoft Azure AI Essentials Professional Certificate</a>
+                    
+                    <!-- LINKED: Power BI for Beginner (Simplilearn) -->
+                    <a href="https://www.simplilearn.com/skillup-certificate-landing?token=eyJjb3Vyc2VfaWQiOiIxNzIyIiwiY2VydGlmaWNhdGVfdXJsIjoiaHR0cHM6XC9cL2NlcnRpZmljYXRlcy5zaW1wbGljZG4ubmV0XC9zaGFyZVwvdGh1bWJfNjkyNjA0Ml8xNzIwODY2MTk4LnBuZyIsInVzZXJuYW1lIjoiU0hJVkFOR0kgU0lOR0gifQ%3D%3D&utm_source=shared-certificate&utm_medium=lms&utm_campaign=shared-certificate-promotion&referrer=https%3A%2F%2Flms.simplilearn.com%2Fcourses%2F4211%2FPower-BI-for-Beginners%2Fcertificate%2Fdownload-skillup&%24web_only=true&_branch_match_id=1457669499708327624&_branch_referrer=H4sIAAAAAAAAA8soKSkottLXL87MLcjJ1EssKNDLyczL1k%2FVz0j1D3AJdU1O9kmyrytKTUstKsrMS49PKsovL04tsvUBqkpN8cwDALyKUhtBAAAA" target="_blank" class="bg-green-700 hover:bg-green-600 text-white px-3 py-1 text-sm rounded-full font-medium transition duration-200 shadow-md">Power BI for Beginner (Simplilearn)</a>
+
+                    <!-- LINKED: Data-Driven Product Research and Design -->
+                    <a href="https://www.linkedin.com/learning/certificates/3606239da2566ce08ae35feb19073859560e2c8f8c40da025ced2a86fb78fd14" target="_blank" class="bg-green-700 hover:bg-green-600 text-white px-3 py-1 text-sm rounded-full font-medium transition duration-200 shadow-md">Data-Driven Product Research and Design (LinkedIn Learning)</a>
+                </div>
+            </div>
+        </section>
+        
+        <!-- --- -->
+
+
+        <!-- 5. Projects Section (Section ID changed from 4 to 5 in mind, but element ID remains #projects) -->
+        <section id="projects" class="py-16">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 text-text-light">Selected Projects</h2>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Project 1: Skin Cancer App (Now clickable) -->
+                <div onclick="openModal('cancer-app')" class="p-6 bg-secondary-dark rounded-xl shadow-xl border-l-4 border-accent-purple cursor-pointer hover:shadow-2xl transition duration-300 transform hover:scale-[1.02]">
+                    <h3 class="text-xl font-bold text-accent-purple mb-2">Skin Cancer Detection (CNN)</h3>
+                    <p class="text-sm text-text-secondary mb-3">Madan Mohan Malaviya University of Technology</p>
+                    <p class="text-text-light text-sm mb-4">Developed a smartphone application utilizing a CNN model to effectively analyze mole images and predict the likelihood of malignancy. <span class="text-accent-purple font-semibold">Click for details.</span></p>
+                </div>
+
+                <!-- Project 2: Air Quality Monitoring (Now clickable) -->
+                <div onclick="openModal('aqi-monitor')" class="p-6 bg-secondary-dark rounded-xl shadow-xl border-l-4 border-accent-purple cursor-pointer hover:shadow-2xl transition duration-300 transform hover:scale-[1.02]">
+                    <h3 class="text-xl font-bold text-accent-purple mb-2">Cloud-Based AQI Monitoring System</h3>
+                    <p class="text-sm text-text-secondary mb-3">NIELIT, Gorakhpur</p>
+                    <p class="text-text-light text-sm mb-4">Established a highly robust, real-time cloud-based system for monitoring Air Quality Index (AQI) data. <span class="text-accent-purple font-semibold">Click for details.</span></p>
+                </div>
+                
+                <!-- Project 3: Bus Ticket Reservation App (New) -->
+                <div onclick="openModal('bus-app')" class="p-6 bg-secondary-dark rounded-xl shadow-xl border-l-4 border-accent-purple cursor-pointer hover:shadow-2xl transition duration-300 transform hover:scale-[1.02]">
+                    <h3 class="text-xl font-bold text-accent-purple mb-2">Bus Ticket Reservation App</h3>
+                    <p class="text-sm text-text-secondary mb-3">Core Java | SpringBoot | MySQL</p>
+                    <p class="text-text-light text-sm mb-4">A Spring MVC project with robust login/registration using Spring Security, role-based access control, and intuitive filtering for seat reservations. <span class="text-accent-purple font-semibold">Click for details.</span></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- --- -->
+
+        <!-- 6. Experience Section (Section ID changed from 5 to 6 in mind, but element ID remains #experience) -->
+        <section id="experience" class="py-16">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 text-text-light">Work & Education</h2>
+
+            <div class="relative pl-10 sm:pl-16">
+                <!-- Vertical Line -->
+                <div class="absolute top-0 left-3 sm:left-6 w-1 bg-gray-700 h-full rounded"></div>
+                
+                <!-- Entry 1: Accenture Professional Experience (Now the first entry) -->
+                <div class="mb-12 relative timeline-dot">
+                    <!-- Added onclick event and cursor styling to the entry wrapper -->
+                    <div onclick="toggleExperience('accenture-details')" class="p-6 bg-secondary-dark rounded-xl shadow-xl border border-gray-800 cursor-pointer hover:shadow-2xl transition duration-300">
+                        <div class="flex justify-between items-center mb-1">
+                            <div class="text-xs text-text-secondary">Nov 2021 - Jun 2024 (30 Months)</div>
+                             <!-- Arrow Icon -->
+                            <svg id="accenture-details-arrow" class="w-5 h-5 transition-transform duration-300 transform rotate-0 text-accent-purple" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-accent-purple">Custom Software Engineering Analyst / Associate</h3>
+                        <p class="text-lg font-medium text-text-light mb-3">ACCENTURE SOLUTIONS PVT LTD</p>
+                        
+                        <!-- Collapsible Content: Hidden by default -->
+                        <div id="accenture-details" class="overflow-hidden transition-all duration-500 ease-in-out max-h-0 opacity-0">
+                            <ul class="list-disc list-inside space-y-2 text-text-secondary ml-4 pt-3">
+                                <li>Led cross-functional development of RESTful APIs, reducing login time by 15% and boosting retention by 20% across 50,000+ users.</li>
+                                <li>Identified pain points through data analytics, leading to upgrades that cut churn by 18% and lifted adoption.</li>
+                                <li>Optimized SQL queries, boosting responsiveness by 12% to enhance user experience.</li>
+                                <li>Built a SpringBoot application to automate resource allocation, delivering an 18% boost in team productivity.</li>
+                                <li>Designed a Java-based report tool to automate data access, helping teams make faster fact-based decisions.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Entry 2: Education - MBA -->
+                <div class="mb-12 relative timeline-dot">
+                    <div class="p-6 bg-secondary-dark rounded-xl shadow-xl border border-gray-800">
+                        <div class="text-xs text-text-secondary mb-1">2024 - 2026</div>
+                        <h3 class="text-xl font-bold text-accent-purple">MBA (General Management)</h3>
+                        <p class="text-lg font-medium text-text-light">Indian Institute of Management (IIM), Shillong</p>
+                        <p class="text-sm text-text-secondary mt-1">GPA: 3.32/4.33</p>
+                    </div>
+                </div>
+                
+                <!-- Entry 3: Education - B. Tech -->
+                <div class="relative timeline-dot">
+                    <div class="p-6 bg-secondary-dark rounded-xl shadow-xl border border-gray-800">
+                        <div class="text-xs text-text-secondary mb-1">2017 - 2021</div>
+                        <h3 class="text-xl font-bold text-accent-purple">B. Tech. (Computer Science & Engineering)</h3>
+                        <p class="text-lg font-medium text-text-light">Madan Mohan Malaviya University of Technology</p>
+                        <p class="text-sm text-text-secondary mt-1">CGPA: 8.06/10</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- --- -->
+
+        <!-- 7. Contact Section (Section ID changed from 6 to 7 in mind, but element ID remains #contact) -->
+        <section id="contact" class="py-16">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-12 text-text-light">Let's Connect</h2>
+            <div class="max-w-xl mx-auto p-8 bg-secondary-dark rounded-xl shadow-2xl border border-gray-800">
+                <p class="text-center text-lg text-text-secondary mb-8">I am actively looking for strategic product and tech roles. Get in touch to discuss collaborations!</p>
+                
+                <form action="#" method="POST" class="space-y-6">
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-text-light mb-1">Name</label>
+                        <input type="text" id="name" name="name" required class="w-full px-4 py-3 bg-primary-dark border border-gray-700 rounded-lg text-text-light focus:border-accent-purple focus:ring-accent-purple outline-none transition">
+                    </div>
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-text-light mb-1">Email</label>
+                        <input type="email" id="email" name="email" required class="w-full px-4 py-3 bg-primary-dark border border-gray-700 rounded-lg text-text-light focus:border-accent-purple focus:ring-accent-purple outline-none transition">
+                    </div>
+                    <div>
+                        <label for="message" class="block text-sm font-medium text-text-light mb-1">Message</label>
+                        <textarea id="message" name="message" rows="4" required class="w-full px-4 py-3 bg-primary-dark border border-gray-700 rounded-lg text-text-light focus:border-accent-purple focus:ring-accent-purple outline-none transition"></textarea>
+                    </div>
+                    <button type="submit" class="w-full px-6 py-3 bg-accent-purple text-primary-dark rounded-lg font-semibold hover:bg-pink-600 transition duration-300 shadow-md shadow-pink-500/40">
+                        Send Message
+                    </button>
+                </form>
+            </div>
+        </section>
+        
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-secondary-dark mt-12 py-8 border-t border-gray-800">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="flex justify-center space-x-6 mb-4">
+                <!-- Social Media Links (Updated) -->
+                
+                <!-- LinkedIn -->
+                <a href="https://www.linkedin.com/in/shivangi-singh-73548518a/" target="_blank" class="text-text-secondary hover:text-accent-purple transition duration-200" title="LinkedIn Profile">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+                </a>
+                
+                <!-- GitHub -->
+                <a href="https://github.com/shivangis2050" target="_blank" class="text-text-secondary hover:text-accent-purple transition duration-200" title="GitHub Profile">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 3c0-.46-1.05-.75-1.5-.75A11.07 11.07 0 0 0 12 3a11.07 11.07 0 0 0-6.41-1.55c-.45 0-1.5.29-1.5.75A5.07 5.07 0 0 0 4 4.77a5.44 5.44 0 0 0-.58 3.71c0 5.43 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+                </a>
+
+                <!-- GeeksforGeeks (using document icon as a coding challenge generic) -->
+                <a href="https://www.geeksforgeeks.org/user/shivangis2050/" target="_blank" class="text-text-secondary hover:text-accent-purple transition duration-200" title="GeeksforGeeks Profile">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><line x1="10" y1="9" x2="8" y2="9"></line></svg>
+                </a>
+                
+                <!-- LeetCode (using Terminal icon as a coding challenge generic) -->
+                <a href="https://leetcode.com/ShivangiSingh2050/" target="_blank" class="text-text-secondary hover:text-accent-purple transition duration-200" title="LeetCode Profile">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+                </a>
+
+                <!-- Email (Updated) -->
+                <a href="mailto:shivangitanu10@gmail.com" target="_blank" class="text-text-secondary hover:text-accent-purple transition duration-200" title="Email Address">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
+                </a>
+            </div>
+            <p class="text-sm text-gray-500">&copy; 2024 Shivangi Singh. All rights reserved. | Crafted with Tailwind CSS.</p>
+        </div>
+    </footer>
+
+    <!-- --- PROJECT MODAL (HIDDEN) --- -->
+    <div id="project-modal" class="hidden fixed inset-0 z-[60] flex items-center justify-center bg-primary-dark/80 backdrop-blur-sm p-4" onclick="closeModal()">
+        <div class="bg-secondary-dark rounded-xl shadow-2xl w-full max-w-2xl transform transition-all overflow-hidden border border-gray-700" onclick="event.stopPropagation()">
+            <!-- Modal Header -->
+            <div class="flex justify-between items-center p-6 border-b border-gray-800">
+                <h3 id="modal-title" class="text-3xl font-bold text-accent-purple">Project Title</h3>
+                <button onclick="closeModal()" class="text-text-secondary hover:text-accent-purple transition duration-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+            </div>
+            
+            <!-- Modal Body -->
+            <div class="p-6 space-y-6">
+                <p id="modal-subtitle" class="text-base font-medium text-text-secondary"></p>
+                
+                <!-- Key Details -->
+                <div class="space-y-3">
+                    <h4 class="text-lg font-semibold text-text-light">Key Contributions:</h4>
+                    <ul id="modal-details" class="space-y-2 pl-4">
+                        <!-- Details injected by JS -->
+                    </ul>
+                </div>
+                
+                <!-- Tags -->
+                <div>
+                    <h4 class="text-lg font-semibold text-text-light mb-2">Technologies:</h4>
+                    <div id="modal-tags" class="flex flex-wrap gap-2">
+                        <!-- Tags injected by JS -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Modal Footer -->
+            <div class="p-6 border-t border-gray-800 flex justify-end space-x-3">
+                <a id="modal-link" href="#" target="_blank" class="px-5 py-2 bg-accent-purple text-primary-dark rounded-lg font-semibold hover:bg-pink-600 transition duration-300 shadow-md shadow-pink-500/40">
+                    View Project Link
+                </a>
+                <button onclick="closeModal()" class="px-5 py-2 border border-text-secondary text-text-light rounded-lg font-semibold hover:bg-primary-dark transition duration-300">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- --- END MODAL --- -->
+
+</body>
+</html>
